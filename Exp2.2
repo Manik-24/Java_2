@@ -1,0 +1,179 @@
+(a): Sum of Integers Using Autoboxing & Unboxing
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class SumUsingAutoboxing {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Integer> numbers = new ArrayList<>();
+
+        System.out.print("Enter how many numbers you want to sum: ");
+        int count = Integer.parseInt(sc.nextLine());
+
+        for (int i = 0; i < count; i++) {
+            System.out.print("Enter number " + (i + 1) + ": ");
+            String input = sc.nextLine();
+            Integer num = Integer.parseInt(input); // autoboxing
+            numbers.add(num);
+        }
+
+        int sum = 0;
+        for (Integer n : numbers) {
+            sum += n; // unboxing
+        }
+
+        System.out.println("Total Sum = " + sum);
+        sc.close();
+    }
+}
+
+(b): Serialization & Deserialization of Student Object
+
+import java.io.Serializable;
+
+public class Student implements Serializable {
+    private int studentID;
+    private String name;
+    private double grade;
+
+    public Student(int studentID, String name, double grade) {
+        this.studentID = studentID;
+        this.name = name;
+        this.grade = grade;
+    }
+
+    public void display() {
+        System.out.println("Student ID: " + studentID);
+        System.out.println("Name: " + name);
+        System.out.println("Grade: " + grade);
+    }
+}
+File 1: Student.java
+import java.io.Serializable;
+
+public class Student implements Serializable {
+    private int studentID;
+    private String name;
+    private double grade;
+
+    public Student(int studentID, String name, double grade) {
+        this.studentID = studentID;
+        this.name = name;
+        this.grade = grade;
+    }
+
+    public void display() {
+        System.out.println("Student ID: " + studentID);
+        System.out.println("Name: " + name);
+        System.out.println("Grade: " + grade);
+    }
+}
+File 2: SerializeDeserializeStudent.java
+import java.io.*;
+import java.util.Scanner;
+
+public class SerializeDeserializeStudent {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter Student ID: ");
+        int id = Integer.parseInt(sc.nextLine());
+        System.out.print("Enter Name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter Grade: ");
+        double grade = Double.parseDouble(sc.nextLine());
+
+        Student student = new Student(id, name, grade);
+
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("student.dat"))) {
+            out.writeObject(student);
+            System.out.println("Student details serialized successfully.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("\nDeserializing object...\n");
+
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("student.dat"))) {
+            Student s = (Student) in.readObject();
+            s.display();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        sc.close();
+    }
+}
+
+Part (c): Menu-Based Employee Management System (File Handling)
+File Name: EmployeeManagement.java
+
+import java.io.*;
+import java.util.Scanner;
+
+public class EmployeeManagement {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        while (true) {
+            System.out.println("\n===== Employee Management System =====");
+            System.out.println("1. Add Employee");
+            System.out.println("2. Display All Employees");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            choice = Integer.parseInt(sc.nextLine());
+
+            if (choice == 1) {
+                try (FileWriter fw = new FileWriter("employees.txt", true);
+                     BufferedWriter bw = new BufferedWriter(fw)) {
+
+                    System.out.print("Enter Employee ID: ");
+                    String id = sc.nextLine();
+                    System.out.print("Enter Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Enter Designation: ");
+                    String designation = sc.nextLine();
+                    System.out.print("Enter Salary: ");
+                    String salary = sc.nextLine();
+
+                    bw.write(id + "," + name + "," + designation + "," + salary);
+                    bw.newLine();
+                    System.out.println("Employee added successfully.");
+                } 
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            else if (choice == 2) {
+                try (BufferedReader br = new BufferedReader(new FileReader("employees.txt"))) {
+                    String line;
+                    System.out.println("\n--- Employee Records ---");
+                    while ((line = br.readLine()) != null) {
+                        String[] data = line.split(",");
+                        System.out.println("ID: " + data[0] + ", Name: " + data[1] + ", Designation: " + data[2] + ", Salary: " + data[3]);
+                    }
+                } 
+                catch (IOException e) {
+                    System.out.println("No employee records found.");
+                }
+            }
+
+            else if (choice == 3) {
+                System.out.println("Exiting...");
+                break;
+            }
+
+            else {
+                System.out.println("Invalid Choice. Try again.");
+            }
+        }
+        sc.close();
+    }
+}
+
+
+
+
+
